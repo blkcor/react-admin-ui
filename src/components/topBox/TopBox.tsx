@@ -15,7 +15,7 @@ const TopBox: React.FC<TopBoxProps> = () => {
         {
           topDealUsers.map((user) => {
             return (
-              <div className="listItem">
+              <div key={user.id} className="listItem">
                 <div className="user">
                   <img src={user.img} alt="" />
                   <div className="userTexts">

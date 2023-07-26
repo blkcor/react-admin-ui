@@ -13,11 +13,11 @@ const Menu: React.FC<MenuProps> = () => {
     {
       menu.map((item) => {
         return (
-          <div className="item">
+          <div key={item.id} className="item">
             <span className="title">{item.title}</span>
             {item.listItems.map((listItem) => {
               return (
-                <Link to={listItem.url} className='listItem'>
+                <Link key={listItem.id} to={listItem.url} className='listItem'>
                   <img src={listItem.icon} className='logo' />
                   <span className="listItemTitle">
                     {listItem.title}
