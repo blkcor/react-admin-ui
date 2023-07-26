@@ -17,7 +17,7 @@ const NavBar: React.FC<NavBarProps> = () => {
       <div className="icons">
         <img src="/search.svg" alt="" className="icon" />
         <img src="/app.svg" alt="" className="icon" />
-        <img src="expand.svg" alt="" className="icon" />
+        <img src="/expand.svg" alt="" className="icon" />
         <div className="notifications">
           <img src="/notifications.svg" alt="notification" />
           <span>1</span>

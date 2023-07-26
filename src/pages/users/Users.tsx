@@ -5,7 +5,7 @@ import { GridColDef } from '@mui/x-data-grid';
 import { userRows } from "../../data"
 import { Button } from '@mui/material';
 import Add from '../../components/add/Add';
-
+import { useQuery, useMutation } from '@tanstack/react-query'
 type UserProps = {
 
 };
@@ -59,6 +59,17 @@ const columns: GridColDef[] = [
 ];
 
 const Users: React.FC<UserProps> = () => {
+  // Queries
+  const { isLoading, data } = useQuery({
+    queryKey: ["allusers"],
+    queryFn: () =>
+      fetch("http://localhost:8800/api/users").then(
+        (res) => res.json()
+      ),
+  });
+
+
+
   const [open, setOpen] = React.useState(false);
   return (
     <div className="users">
@@ -67,7 +78,11 @@ const Users: React.FC<UserProps> = () => {
         <Button className='button' variant="outlined" onClick={() => setOpen(prev => !prev)}>Add New User</Button>
 
       </div>
-      <DataTable slug="user" columns={columns} rows={userRows} />
+      {isLoading ? (
+        "Loading..."
+      ) : (
+        <DataTable slug="user" columns={columns} rows={data} />
+      )}
       {open && <Add slug='user' columns={columns} setOpen={setOpen} />}
     </div>
   )

@@ -18,7 +18,7 @@ const Menu: React.FC<MenuProps> = () => {
             {item.listItems.map((listItem) => {
               return (
                 <Link key={listItem.id} to={listItem.url} className='listItem'>
-                  <img src={listItem.icon} className='logo' />
+                  <img src={"/" + listItem.icon} className='logo' />
                   <span className="listItemTitle">
                     {listItem.title}
                   </span>

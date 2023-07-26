@@ -5,6 +5,8 @@ import Products from "./pages/products/Products"
 import Layout from "./layout/Layout"
 import Login from "./pages/login/Login"
 import "./styles/global.scss"
+import User from "./pages/user/User"
+import Product from "./pages/product/Product"
 
 function App() {
   const router = createBrowserRouter([
@@ -21,8 +23,16 @@ function App() {
           element: <Users />
         },
         {
+          path: "/user/:userId",
+          element: <User />
+        },
+        {
           path: "/products",
           element: <Products />
+        },
+        {
+          path: "/product/:productId",
+          element: <Product />
         }
       ]
     },

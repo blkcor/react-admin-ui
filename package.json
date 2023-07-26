@@ -14,8 +14,11 @@
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.14.2",
     "@mui/x-data-grid": "^6.10.1",
+    "@tanstack/react-query": "^4.32.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-draggable": "^4.4.5",
+    "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.14.2",
     "recharts": "^2.7.2",
     "sass": "^1.64.1"
