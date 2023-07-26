@@ -44,7 +44,7 @@ const PieChartBox: React.FC<PieChartBoxProps> = () => {
       <div className="options">
         {data.map(item => {
           return (
-            <div className="option">
+            <div className="option" key={item.name}>
               <div className="title">
                 <div className="dot" style={{ backgroundColor: item.color }} />
                 <span>{item.name}</span>
