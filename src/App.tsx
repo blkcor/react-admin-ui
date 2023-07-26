@@ -23,7 +23,7 @@ function App() {
           element: <Users />
         },
         {
-          path: "/user/:userId",
+          path: "/users/:userId",
           element: <User />
         },
         {
@@ -31,7 +31,7 @@ function App() {
           element: <Products />
         },
         {
-          path: "/product/:productId",
+          path: "/products/:productId",
           element: <Product />
         }
       ]

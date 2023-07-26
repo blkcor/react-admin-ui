@@ -3,7 +3,7 @@ import "./products.scss"
 import { Button } from '@mui/material';
 import Add from '../../components/add/Add';
 import DataTable from '../../components/dataTable/DataTable';
-import { userRows, products } from '../../data';
+import { products } from '../../data';
 import { GridColDef } from '@mui/x-data-grid';
 type ProductsProps = {
 
@@ -68,8 +68,8 @@ const Products: React.FC<ProductsProps> = () => {
         <Button className='button' variant="outlined" onClick={() => setOpen(prev => !prev)}>Add New Product</Button>
 
       </div>
-      <DataTable slug="product" columns={columns} rows={products} />
-      {open && <Add slug='product' columns={columns} setOpen={setOpen} />}
+      <DataTable slug="products" columns={columns} rows={products} />
+      {open && <Add slug='products' columns={columns} setOpen={setOpen} />}
     </div>
   )
 }

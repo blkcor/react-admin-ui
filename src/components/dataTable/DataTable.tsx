@@ -1,53 +1,73 @@
-import React, { useState } from 'react';
-import "./dataTable.scss"
-import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
-import { Link } from 'react-router-dom';
-import { QueryClient, useMutation } from '@tanstack/react-query'
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import { toast } from 'react-hot-toast'
-type DataTableProps = {
-  columns: GridColDef[],
-  rows: object[],
-  slug: string
+import {
+  DataGrid,
+  GridColDef,
+  GridToolbar,
+} from "@mui/x-data-grid";
+import "./dataTable.scss";
+import { Link } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
+import { useState } from "react";
+import toast from "react-hot-toast";
+
+type Props = {
+  columns: GridColDef[];
+  rows: object[];
+  slug: string;
 };
 
-const DataTable: React.FC<DataTableProps> = (props) => {
-  const [open, setOpen] = useState<boolean>(false)
-  const [id, setId] = useState<number>()
-  const queryClient = new QueryClient()
+const DataTable = (props: Props) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [idToDelete, setIdToDelete] = useState(0);
+  const [confirmDelete, setConfirmDelete] = useState(false); // Track whether "Confirm" button is clicked
 
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (id: number) => {
-      //call api to delete the item
       return fetch(`http://localhost:8800/api/${props.slug}/${id}`, {
-        method: 'DELETE'
-      })
+        method: "delete",
+      });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries([`all${props.slug}`])
-      toast.error('cancel delete', {
-        duration: 2000,
-        position: 'top-center'
-      })
-    },
-    onError: (error: any) => {
-      toast.error('delete failed', {
-        duration: 2000,
-        position: 'top-center'
-      })
-      console.log(error)
+      queryClient.invalidateQueries([`all${props.slug}`]);
     }
+  });
 
-
-  })
+  const handleDelete = (id: number) => {
+    // Open the dialog
+    setIsOpen(true);
+    setIdToDelete(id);
+    setConfirmDelete(true);
+  };
+  const handleCancelDelete = () => {
+    // Cancel the delete action
+    setConfirmDelete(false);
+    toast("Cancel delete", {
+      duration: 2000,
+      icon: "⚠️",
+      position: "top-center",
+    })
+    setIdToDelete(0);
+  };
+  const handleConfirmDelete = () => {
+    // Confirm and perform the delete action
+    mutation.mutate(idToDelete);
+    toast.success("Delete successfully", {
+      duration: 2000,
+      position: "top-center",
+    })
+    setConfirmDelete(false);
+    setIsOpen(false);
+  };
 
   const actionColumn: GridColDef = {
     field: "action",
     headerName: "Action",
     width: 200,
     renderCell: (params) => {
+
       return (
-        <div className='action'>
+        <div className="action">
           <Link to={`/${props.slug}/${params.row.id}`}>
             <img src="/view.svg" alt="" />
           </Link>
@@ -55,86 +75,58 @@ const DataTable: React.FC<DataTableProps> = (props) => {
             <img src="/delete.svg" alt="" />
           </div>
         </div>
-      )
-    }
-  }
-
-  const handleDelete = (id: number) => {
-    setOpen(true)
-    setId(id)
-  }
-
-  const handleCancel = () => {
-    setOpen(false)
-    return
-  }
-
-  const handleConfirm = () => {
-    setOpen(false)
-    toast.success('Delete successfully', {
-      duration: 2000,
-      position: 'top-center'
-    })
-    mutation.mutate(id!)
-  }
-
-
-  const handleClose = () => {
-    setOpen(false);
-  }
+      );
+    },
+  };
 
   return (
-    <>
-      <div className='dataTable'>
-        <DataGrid
-          className='dataGrid'
-          rows={props.rows}
-          columns={[...props.columns, actionColumn]}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 10,
-              },
+    <div className="dataTable">
+      <DataGrid
+        className="dataGrid"
+        rows={props.rows}
+        columns={[...props.columns, actionColumn]}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 10,
             },
-          }}
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-              quickFilterProps: {
-                debounceMs: 500,
-              }
-            }
-          }}
-          pageSizeOptions={[5]}
-          checkboxSelection
-          disableRowSelectionOnClick
-          disableColumnFilter
-          disableDensitySelector
-          disableColumnSelector
-        />
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="draggable-dialog-title"
-        >
-          <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-            Confirm Delete
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Are you sure to delete this item?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button autoFocus onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button color='error' onClick={handleConfirm}>delete</Button>
-          </DialogActions>
-        </Dialog>
-      </div>
-    </>
-  )
-}
+          },
+        }}
+        slots={{ toolbar: GridToolbar }}
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+            quickFilterProps: { debounceMs: 500 },
+          },
+        }}
+        pageSizeOptions={[5]}
+        checkboxSelection
+        disableRowSelectionOnClick
+        disableColumnFilter
+        disableDensitySelector
+        disableColumnSelector
+      />
+      <Dialog
+        open={isOpen && confirmDelete}
+        aria-labelledby="draggable-dialog-title"
+      >
+        <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+          Confirm Delete
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure to delete this item?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleCancelDelete}>
+            Cancel
+          </Button>
+          <Button color='error' onClick={handleConfirmDelete} >delete</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+};
+
 export default DataTable;

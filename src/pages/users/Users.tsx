@@ -1,14 +1,10 @@
-import React from 'react';
-import "./users.scss"
-import DataTable from '../../components/dataTable/DataTable';
-import { GridColDef } from '@mui/x-data-grid';
-import { userRows } from "../../data"
-import { Button } from '@mui/material';
-import Add from '../../components/add/Add';
-import { useQuery, useMutation } from '@tanstack/react-query'
-type UserProps = {
+import { GridColDef } from "@mui/x-data-grid";
+import DataTable from "../../components/dataTable/DataTable";
+import "./Users.scss";
+import { useState } from "react";
+import Add from "../../components/add/Add";
+import { useQuery } from "@tanstack/react-query";
 
-};
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
@@ -58,8 +54,11 @@ const columns: GridColDef[] = [
   },
 ];
 
-const Users: React.FC<UserProps> = () => {
-  // Queries
+const Users = () => {
+  const [open, setOpen] = useState(false);
+
+  // TEST THE API
+
   const { isLoading, data } = useQuery({
     queryKey: ["allusers"],
     queryFn: () =>
@@ -68,24 +67,20 @@ const Users: React.FC<UserProps> = () => {
       ),
   });
 
-
-
-  const [open, setOpen] = React.useState(false);
   return (
     <div className="users">
       <div className="info">
         <h1>Users</h1>
-        <Button className='button' variant="outlined" onClick={() => setOpen(prev => !prev)}>Add New User</Button>
-
+        <button onClick={() => setOpen(true)}>Add New User</button>
       </div>
       {isLoading ? (
         "Loading..."
       ) : (
-        <DataTable slug="user" columns={columns} rows={data} />
+        <DataTable slug="users" columns={columns} rows={data} />
       )}
-      {open && <Add slug='user' columns={columns} setOpen={setOpen} />}
+      {open && <Add slug="user" columns={columns} setOpen={setOpen} />}
     </div>
-  )
+  );
+};
 
-}
 export default Users;
